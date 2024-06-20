@@ -11,7 +11,7 @@ public class RegisterStrategy implements HomeKeyStrokeStrategy {
      * @param homeKeyStrokeStrategyContext
      */
     @Override
-    public void keyBoardEvent(HomeKeyStrokeStrategyContext homeKeyStrokeStrategyContext) {
-
+    public void keyBoardEvent(HomeKeyStrokeStrategyContext homeKeyStrokeStrategyContext) throws Exception {
+        homeKeyStrokeStrategyContext.getHomeService().register();
     }
 }

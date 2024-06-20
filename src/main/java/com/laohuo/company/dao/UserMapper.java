@@ -1,8 +1,10 @@
 package com.laohuo.company.dao;
 
 import com.laohuo.company.common.BaseResponse;
+import com.laohuo.company.common.ErrorCode;
 import com.laohuo.company.common.ResultUtils;
 import com.laohuo.company.entity.User;
+import com.laohuo.company.exception.BusinessException;
 import com.laohuo.company.jdbc.JdbcUtil;
 import com.laohuo.company.util.BaseContext;
 
@@ -33,7 +35,33 @@ public class UserMapper {
         return ResultUtils.success(userData);
     }
 
-    // public static BaseResponse<ResultSet> register
+    /**
+     * 用户注册
+     * @param username 用户名
+     * @param password 用户密码
+     * @param nickname 用户名字
+     * @return
+     * @throws Exception
+     */
+    public static BaseResponse<ResultSet> register(String name, String pwd, String nk, int sy) throws Exception {
+        String sql = "INSERT INTO user(username,password,nickname,salary) VALUES(?,?,?,?)";
+        PreparedStatement preparedStatement = connection.prepareStatement(sql);
+        preparedStatement.setString(1, name);
+        preparedStatement.setString(2, pwd);
+        preparedStatement.setString(3, nk);
+        preparedStatement.setDouble(4, sy + 0.0);
+        boolean isSuccess = preparedStatement.executeUpdate() == 1;
+
+        // 处理系统错误
+        if (!isSuccess) {
+            System.out.println(new BusinessException(ErrorCode.SYSTEM_ERROR).getMessage());
+            return null;
+        }
+
+        // 注册成功后直接登录
+        BaseResponse<ResultSet> userData = login(name, pwd);
+        return userData;
+    }
 
     /**
      * 获取个人信息

@@ -5,6 +5,7 @@ import com.laohuo.company.common.ViewInfo;
 import com.laohuo.company.strategy.homeKeyStroke.HomeKeyStrokeStrategy;
 import com.laohuo.company.strategy.homeKeyStroke.HomeKeyStrokeStrategyContext;
 import com.laohuo.company.strategy.homeKeyStroke.LoginStrategy;
+import com.laohuo.company.strategy.homeKeyStroke.RegisterStrategy;
 import com.laohuo.company.strategy.mainKeyStroke.MainKeyStokeStategy;
 import com.laohuo.company.strategy.mainKeyStroke.MainKeyStrokeStrategyContext;
 import com.laohuo.company.strategy.mainKeyStroke.PersonInfoStrategy;
@@ -43,7 +44,8 @@ public class KeyBoardEventListener {
                     loginStrategy.keyBoardEvent(homeKeyStrokeStrategyContext);
                     break;
                 } else if (keyBoard == KeyBoardEvent.Register.getCode()) {
-                    System.out.println("用户注册");
+                    HomeKeyStrokeStrategy registerStrategy = new RegisterStrategy();
+                    registerStrategy.keyBoardEvent(homeKeyStrokeStrategyContext);
                     break;
                 } else if (keyBoard == KeyBoardEvent.Exit.getCode()) {
                     System.out.println("退出成功");
@@ -63,6 +65,7 @@ public class KeyBoardEventListener {
                     break;
                 } else {
                     System.out.println("操作错误请重新操作");
+                    this.ListenKeyBoardEvent(viewInfo);
                     return;
                 }
             default:
