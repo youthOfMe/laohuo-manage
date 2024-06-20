@@ -61,6 +61,13 @@ public class KeyBoardEventListener {
                 MainKeyStrokeStrategyContext mainKeyStrokeStrategyContext = new MainKeyStrokeStrategyContext();
                 if (keyBoard == KeyBoardEvent.PersonInfo.getCode()) {
                     MainKeyStokeStategy personInfoStategy = new PersonInfoStrategy();
+                    MainKeyStrokeStrategyContext.isPerson = true;
+                    personInfoStategy.keyBoardEvent(mainKeyStrokeStrategyContext);
+                    break;
+                }
+                else if (keyBoard == KeyBoardEvent.GetSalary.getCode()) {
+                    MainKeyStokeStategy personInfoStategy = new PersonInfoStrategy();
+                    MainKeyStrokeStrategyContext.isPerson = false;
                     personInfoStategy.keyBoardEvent(mainKeyStrokeStrategyContext);
                     break;
                 } else {

@@ -106,6 +106,9 @@ public class HomeServiceImpl implements HomeService {
             this.register();
             return;
         }
+
+        // 查询用户名是否被使用
+
         System.out.println("请输入密码: ");
         String password = scanner.next();
         if (StringUtils.isBlank(password)) {

@@ -5,6 +5,7 @@ import com.laohuo.company.common.ViewInfo;
 import com.laohuo.company.dao.UserMapper;
 import com.laohuo.company.entity.User;
 import com.laohuo.company.service.MainService;
+import com.laohuo.company.strategy.mainKeyStroke.MainKeyStrokeStrategyContext;
 import com.laohuo.company.util.BaseContext;
 import com.laohuo.company.util.KeyBoardEventListener;
 
@@ -40,11 +41,18 @@ public class MainServiceImpl implements MainService {
             return;
         }
         User user = userBaseResponse.getData();
-        System.out.println("个人信息:" +
-                "\n用户名: " + user.getUsername() +
-                "\n真实姓名: " + user.getNickname() +
-                "\n职位: " + (user.getIsAdmin() == 1 ? "老板" : "职员") +
-                "\n薪水: " + user.getSalary());
+
+        // 区分获取薪资还是获取个人信息
+        if (MainKeyStrokeStrategyContext.isPerson) {
+            System.out.println("个人信息:" +
+                    "\n用户名: " + user.getUsername() +
+                    "\n真实姓名: " + user.getNickname() +
+                    "\n职位: " + (user.getIsAdmin() == 1 ? "老板" : "职员") +
+                    "\n薪水: " + user.getSalary());
+        } else {
+            System.out.println("薪水: " + user.getSalary());
+        }
+
         KeyBoardEventListener keyBoardEventListener = KeyBoardEventListener.getInstance();
         keyBoardEventListener.ListenKeyBoardEvent(ViewInfo.MainView);
     }

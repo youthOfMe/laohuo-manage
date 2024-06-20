@@ -8,7 +8,8 @@ public enum KeyBoardEvent {
     Login(101, "用户登录"),
     Register(102, "用户注册"),
     Exit(103, "用户退出"),
-    PersonInfo(201, "查看个人信息");
+    PersonInfo(201, "查看个人信息"),
+    GetSalary(204, "查看薪水");
 
     /**
      * 按键编码

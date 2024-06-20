@@ -14,4 +14,6 @@ public class MainKeyStrokeStrategyContext {
     private KeyBoardEvent keyBoardEvent;
 
     private MainService mainService = MainServiceImpl.getInstance();
+
+    public static boolean isPerson = true;
 }
