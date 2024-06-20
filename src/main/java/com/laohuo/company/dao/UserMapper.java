@@ -36,10 +36,24 @@ public class UserMapper {
     }
 
     /**
-     * 用户注册
+     * 查询用户是否存在
      * @param username 用户名
-     * @param password 用户密码
-     * @param nickname 用户名字
+     * @return
+     * @throws Exception
+     */
+    public static BaseResponse<Boolean> existUser(String username) throws Exception {
+        String sql = "SELECT * FROM user where username = ?";
+        PreparedStatement preparedStatement = connection.prepareStatement(sql);
+        preparedStatement.setString(1, username);
+        ResultSet userData = preparedStatement.executeQuery();
+        return ResultUtils.success(userData != null);
+    }
+
+    /**
+     * 用户注册
+     * @param name 用户名
+     * @param pwd 用户密码
+     * @param nk 用户名字
      * @return
      * @throws Exception
      */

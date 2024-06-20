@@ -108,6 +108,12 @@ public class HomeServiceImpl implements HomeService {
         }
 
         // 查询用户名是否被使用
+        boolean isExistUser = UserMapper.existUser(username).getData();
+        if (isExistUser) {
+            System.out.println("对不起! 您注册的用户名已经存在！");
+            this.register();
+            return;
+        }
 
         System.out.println("请输入密码: ");
         String password = scanner.next();
