@@ -1,18 +1,31 @@
 package com.laohuo.company.service.impl;
 
 import com.laohuo.company.common.BaseResponse;
+import com.laohuo.company.common.ErrorCode;
 import com.laohuo.company.common.ViewInfo;
 import com.laohuo.company.dao.UserMapper;
 import com.laohuo.company.entity.User;
+import com.laohuo.company.exception.BusinessException;
 import com.laohuo.company.service.MainService;
 import com.laohuo.company.strategy.mainKeyStroke.MainKeyStrokeStrategyContext;
+import com.laohuo.company.util.AlgorithmUtils;
 import com.laohuo.company.util.BaseContext;
 import com.laohuo.company.util.KeyBoardEventListener;
+import com.laohuo.company.util.PassWordUtil;
+import com.laohuo.company.view.MainView;
+import org.apache.commons.lang3.StringUtils;
+
+import java.util.Scanner;
 
 /**
  * 主页面服务层
  */
 public class MainServiceImpl implements MainService {
+
+    /**
+     * 机会
+     */
+    static Integer count = 3;
 
     private static MainService mainService;
 
@@ -24,6 +37,8 @@ public class MainServiceImpl implements MainService {
         if (mainService == null) mainService = new MainServiceImpl();
         return mainService;
     }
+
+    final Scanner scanner = new Scanner(System.in);
 
     /**
      * 查看个人信息
@@ -57,4 +72,65 @@ public class MainServiceImpl implements MainService {
         keyBoardEventListener.ListenKeyBoardEvent(ViewInfo.MainView);
     }
 
+    /**
+     * 修改密码
+     * @throws Exception
+     */
+    @Override
+    public void updatePassword() throws Exception {
+        if (count-- <= 0) {
+            System.out.println("您没有机会了");
+            System.exit(0);
+        }
+
+        Long userId = BaseContext.getCurrentId();
+        System.out.println("请输入原密码: ");
+        String password = scanner.next();
+        if (StringUtils.isBlank(password)) {
+            System.out.println("原密码不可为空, 您还有" + count + "次机会");
+            this.updatePassword();
+            return;
+        }
+
+        // 查询原密码正确吗
+        boolean isPassword = UserMapper.isPassword(userId, password).getData();
+        if (!isPassword) {
+            System.out.println("原密码不正确！您还有" + count + "次机会");
+            this.updatePassword();
+            return;
+        }
+
+        // 查询更改后的密码是否符合规则
+        System.out.println("请输入更改后的密码: ");
+        String updatePassword = scanner.next();
+        if (StringUtils.isBlank(updatePassword)) {
+            System.out.println("密码不可为空, 您还有" + count + "次机会");
+            this.updatePassword();
+            return;
+        }
+        if (updatePassword.length() < 4 || updatePassword.length() > 18) {
+            System.out.println("密码长度不可小于4大于18, 您还有" + count + "次机会");
+            this.updatePassword();
+            return;
+        }
+        if (!PassWordUtil.isLetterDigit(updatePassword)) {
+            System.out.println("密码必须同时包含字母和数字, 您还有" + count + "次机会");
+            this.updatePassword();
+            return;
+        }
+        if (AlgorithmUtils.minDistance(password, updatePassword) <= 2) {
+            System.out.println("修改的密码不能和原来的密码相似");
+            count++;
+            this.updatePassword();
+            return;
+        }
+
+        // 进行更改密码
+        Boolean isSuccess = UserMapper.updatePassword(userId, updatePassword).getData();
+        if (!isSuccess) {
+            System.out.println(new BusinessException(ErrorCode.SYSTEM_ERROR).getMessage());
+            System.exit(0);
+        }
+        MainView.mainView();
+    }
 }

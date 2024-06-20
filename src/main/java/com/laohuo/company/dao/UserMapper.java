@@ -100,4 +100,36 @@ public class UserMapper {
         return ResultUtils.success(user);
 
     }
+
+    /**
+     * 根据用户ID和密码查询用户信息
+     * @param userId 用户ID
+     * @param password 用户密码
+     * @return
+     * @throws Exception
+     */
+    public static BaseResponse<Boolean> isPassword(Long userId, String password) throws Exception {
+        String sql = "SELECT * FROM user where id = ? and password = ?";
+        PreparedStatement preparedStatement = connection.prepareStatement(sql);
+        preparedStatement.setLong(1, userId);
+        preparedStatement.setString(2, password);
+        ResultSet userData = preparedStatement.executeQuery();
+        return ResultUtils.success(userData.next());
+    }
+
+    /**
+     * 根据用户id进行修改密码
+     * @param userId 用户ID
+     * @param password 密码
+     * @return
+     * @throws Exception
+     */
+    public static BaseResponse<Boolean> updatePassword(Long userId, String password) throws Exception {
+        String sql = "UPDATE user SET password = ? where id = ?";
+        PreparedStatement preparedStatement = connection.prepareStatement(sql);
+        preparedStatement.setString(1, password);
+        preparedStatement.setLong(2, userId);
+        int count = preparedStatement.executeUpdate();
+        return ResultUtils.success(count == 1);
+    }
 }

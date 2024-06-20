@@ -9,6 +9,7 @@ import com.laohuo.company.strategy.homeKeyStroke.RegisterStrategy;
 import com.laohuo.company.strategy.mainKeyStroke.MainKeyStokeStategy;
 import com.laohuo.company.strategy.mainKeyStroke.MainKeyStrokeStrategyContext;
 import com.laohuo.company.strategy.mainKeyStroke.PersonInfoStrategy;
+import com.laohuo.company.strategy.mainKeyStroke.UpdatePasswordStrategy;
 
 import java.util.Scanner;
 
@@ -69,6 +70,10 @@ public class KeyBoardEventListener {
                     MainKeyStokeStategy personInfoStategy = new PersonInfoStrategy();
                     MainKeyStrokeStrategyContext.isPerson = false;
                     personInfoStategy.keyBoardEvent(mainKeyStrokeStrategyContext);
+                    break;
+                } else if (keyBoard == KeyBoardEvent.UpdatePassword.getCode()) {
+                    MainKeyStokeStategy updatePasswordStrategy = new UpdatePasswordStrategy();
+                    updatePasswordStrategy.keyBoardEvent(mainKeyStrokeStrategyContext);
                     break;
                 } else {
                     System.out.println("操作错误请重新操作");

@@ -9,6 +9,7 @@ public enum KeyBoardEvent {
     Register(102, "用户注册"),
     Exit(103, "用户退出"),
     PersonInfo(201, "查看个人信息"),
+    UpdatePassword(202, "修改用户密码"),
     GetSalary(204, "查看薪水");
 
     /**
