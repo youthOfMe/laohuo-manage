@@ -1,5 +1,6 @@
 package com.laohuo.company;
 
+import com.laohuo.company.interceptor.MainThreadInterceptor;
 import com.laohuo.company.view.HomeView;
 
 /**
@@ -8,6 +9,10 @@ import com.laohuo.company.view.HomeView;
  */
 public class Main {
     public static void main(String[] args) throws Exception {
+
+        // 启动拦截器
+        MainThreadInterceptor.shutConnection();
+
         String[] animationFrames = {"|", "/", "-", "\\"};
         for (int i = 0; i < 2; i++) {
             System.out.print("Loading " + animationFrames[i % 4] + "\r");

@@ -26,6 +26,8 @@ public class MainView {
 
         System.out.println("4.查看薪资" +
                 "\n5.返回上一层");
+
+        // 启动监听器
         KeyBoardEventListener keyBoardEventListener = KeyBoardEventListener.getInstance();
         keyBoardEventListener.ListenKeyBoardEvent(ViewInfo.MainView);
     }
