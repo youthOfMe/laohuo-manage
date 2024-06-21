@@ -1,24 +1,21 @@
-package com.laohuo.company.entity;
+package com.laohuo.company.pojo.vo;
 
 import lombok.Builder;
 import lombok.Data;
 
 import java.util.Date;
 
-/**
- * 汇报实体类
- */
 @Data
 @Builder
-public class Report {
+public class WaitReplyReport {
 
     private Long id;
-
-    private Long userId;
 
     private String title;
 
     private String content;
+
+    private String nickname;
 
     private Date createTime;
 }

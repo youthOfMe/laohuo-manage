@@ -21,4 +21,10 @@ public interface MainService {
      * @throws Exception
      */
     void presentation() throws Exception;
+
+    /**
+     * 查看汇报
+     * @throws Exception
+     */
+    void lookReport() throws Exception;
 }

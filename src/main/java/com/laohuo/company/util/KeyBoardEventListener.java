@@ -76,7 +76,8 @@ public class KeyBoardEventListener {
                 } else if (keyBoard == KeyBoardEvent.Report.getCode()) {
                     User user = (User) LocalCache.getInstance().getCacheMap().get("userInfo");
                     if (user.getIsAdmin() == 1) {
-
+                        MainKeyStokeStategy lookReportStrategy = new LookReportStrategy();
+                        lookReportStrategy.keyBoardEvent(mainKeyStrokeStrategyContext);
                     } else {
                         MainKeyStokeStategy presentationStrategy = new PresentationStrategy();
                         presentationStrategy.keyBoardEvent(mainKeyStrokeStrategyContext);

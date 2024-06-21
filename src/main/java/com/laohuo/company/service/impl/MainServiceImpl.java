@@ -1,18 +1,25 @@
 package com.laohuo.company.service.impl;
 
+import com.laohuo.company.common.BaseResponse;
 import com.laohuo.company.common.ErrorCode;
 import com.laohuo.company.common.ViewInfo;
 import com.laohuo.company.dao.ReportMapper;
 import com.laohuo.company.dao.UserMapper;
 import com.laohuo.company.entity.User;
 import com.laohuo.company.exception.BusinessException;
+import com.laohuo.company.pojo.vo.WaitReplyReport;
 import com.laohuo.company.service.MainService;
 import com.laohuo.company.strategy.mainKeyStroke.MainKeyStrokeStrategyContext;
 import com.laohuo.company.util.*;
 import com.laohuo.company.view.MainView;
 import org.apache.commons.lang3.StringUtils;
 
+import java.sql.ResultSet;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 
 /**
  * 主页面服务层
@@ -181,5 +188,86 @@ public class MainServiceImpl implements MainService {
             System.out.println("汇报成功！");
         }
         MainView.mainView();
+    }
+
+    /**
+     * 查看汇报
+     * @throws Exception
+     */
+    @Override
+    public void lookReport() throws Exception {
+        // 1. 查询汇报 汇报编号 - 汇报人 - 汇报标题 - 汇报内容 - 汇报时间
+        BaseResponse<ResultSet> reportResultSet = ReportMapper.listReport();
+
+        if (reportResultSet.getCode() != 0) {
+            System.out.println(new BusinessException(ErrorCode.SYSTEM_ERROR).getMessage());
+        }
+
+        List<WaitReplyReport> reportList = new ArrayList<>();
+        ResultSet reportData = reportResultSet.getData();
+
+        int size = 0;
+        while (reportData.next()) {
+            size++;
+            WaitReplyReport report = WaitReplyReport.builder()
+                    .id(reportData.getLong("id"))
+                    .title(reportData.getString("title"))
+                    .content(reportData.getString("content"))
+                    .nickname(reportData.getString("nickname"))
+                    .createTime(reportData.getDate("createTime"))
+                    .build();
+            reportList.add(report);
+        }
+        if (size <= 0) {
+            System.out.println("无数据~");
+        }
+
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        System.out.println("以下为没有进行回复的汇报: ");
+        for (WaitReplyReport waitReplyReport : reportList) {
+            System.out.println("汇报编号: " + waitReplyReport.getId());
+            System.out.println("汇报人: " + waitReplyReport.getNickname());
+            System.out.println("汇报标题: " + waitReplyReport.getTitle());
+            System.out.println("汇报内容: " + waitReplyReport.getContent());
+            System.out.println("汇报时间: " + sdf.format(waitReplyReport.getCreateTime()));
+            System.out.println("=================");
+        }
+
+        // 2. 根据汇报编码选择汇报
+        System.out.println("请选择需要回复的汇报");
+        Long reportId = Long.valueOf(scanner.nextInt());
+        // 处理输入错误
+        List<WaitReplyReport> isExistsReport = reportList.stream().filter((report) -> {
+            return report.getId().equals(reportId);
+        }).collect(Collectors.toList());
+        if (isExistsReport.size() != 1) {
+            System.out.println(new BusinessException(ErrorCode.PARAMS_ERROR, "参数错误, 不存在这个编号的报告").getMessage());
+            this.lookReport();
+            return;
+        }
+
+        // 3. 回复汇报
+        System.out.println("请输入回复的内容");
+        String content = scanner.next();
+        BaseResponse<Boolean> result = ReportMapper.replyReport(content, reportId);
+        if (!result.getData()) {
+            System.out.println(new BusinessException(ErrorCode.SYSTEM_ERROR, "系统错误, 数据库出现BUG"));
+            System.exit(0);
+        }
+        System.out.println("回复成功~");
+
+        // 4. 是否继续回复其他汇报
+        System.out.println("是否继续回复其他汇报？(1是, 2否回到上一层)");
+        Integer isGoOn = scanner.nextInt();
+        if (isGoOn == 2) {
+            MainView.mainView();
+            return;
+        } else if (isGoOn == 1) {
+            this.lookReport();
+            return;
+        } else {
+            System.out.println("非法输入！");
+        }
+
     }
 }
