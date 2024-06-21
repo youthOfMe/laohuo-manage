@@ -32,6 +32,9 @@ public class UserMapper {
         preparedStatement.setString(1, username);
         preparedStatement.setString(2, password);
         ResultSet userData = preparedStatement.executeQuery();
+
+        // 关闭连接
+        preparedStatement.close();
         return ResultUtils.success(userData);
     }
 
@@ -46,6 +49,9 @@ public class UserMapper {
         PreparedStatement preparedStatement = connection.prepareStatement(sql);
         preparedStatement.setString(1, username);
         ResultSet userData = preparedStatement.executeQuery();
+
+        // 关闭连接
+        preparedStatement.close();
         return ResultUtils.success(userData != null);
     }
 
@@ -74,6 +80,8 @@ public class UserMapper {
 
         // 注册成功后直接登录
         BaseResponse<ResultSet> userData = login(name, pwd);
+        // 关闭连接
+        preparedStatement.close();
         return userData;
     }
 
@@ -97,6 +105,9 @@ public class UserMapper {
             user.setIsAdmin(userInfo.getInt("isAdmin"));
             user.setSalary(userInfo.getDouble("salary"));
         }
+
+        // 关闭连接
+        preparedStatement.close();
         return ResultUtils.success(user);
 
     }
@@ -114,6 +125,9 @@ public class UserMapper {
         preparedStatement.setLong(1, userId);
         preparedStatement.setString(2, password);
         ResultSet userData = preparedStatement.executeQuery();
+
+        // 关闭连接
+        preparedStatement.close();
         return ResultUtils.success(userData.next());
     }
 
@@ -130,6 +144,9 @@ public class UserMapper {
         preparedStatement.setString(1, password);
         preparedStatement.setLong(2, userId);
         int count = preparedStatement.executeUpdate();
+
+        // 关闭连接
+        preparedStatement.close();
         return ResultUtils.success(count == 1);
     }
 }

@@ -91,11 +91,18 @@ public class HomeServiceImpl implements HomeService {
             LocalCache cacheMap = LocalCache.getInstance();
             cacheMap.getCacheMap().put("userInfo", user);
             System.out.println("登录成功~");
+
+            // 关闭连接
+            queryResult.getData().close();
+
+            // 重新渲染
             MainView.mainView();
         } else {
             System.out.println("登录失败, 您还有" + count + "次机会");
             this.login();
         }
+
+;
     }
 
     @Override
@@ -174,6 +181,10 @@ public class HomeServiceImpl implements HomeService {
         if (queryResult.getData().next()) {
             BaseContext.setCurrentId(queryResult.getData().getLong("id"));
             System.out.println("注册成功~");
+
+            // 关闭连接
+            queryResult.getData().close();
+            // 重新渲染
             MainView.mainView();
         } else {
             System.out.println("注册失败, 您还有" + count + "次机会");
