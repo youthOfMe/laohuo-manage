@@ -1,6 +1,5 @@
 package com.laohuo.company.service.impl;
 
-import com.laohuo.company.common.BaseResponse;
 import com.laohuo.company.common.ErrorCode;
 import com.laohuo.company.common.ViewInfo;
 import com.laohuo.company.dao.UserMapper;
@@ -8,10 +7,7 @@ import com.laohuo.company.entity.User;
 import com.laohuo.company.exception.BusinessException;
 import com.laohuo.company.service.MainService;
 import com.laohuo.company.strategy.mainKeyStroke.MainKeyStrokeStrategyContext;
-import com.laohuo.company.util.AlgorithmUtils;
-import com.laohuo.company.util.BaseContext;
-import com.laohuo.company.util.KeyBoardEventListener;
-import com.laohuo.company.util.PassWordUtil;
+import com.laohuo.company.util.*;
 import com.laohuo.company.view.MainView;
 import org.apache.commons.lang3.StringUtils;
 
@@ -50,12 +46,18 @@ public class MainServiceImpl implements MainService {
             System.out.println("未登录!非法用户！");
             return;
         }
-        BaseResponse<User> userBaseResponse = UserMapper.personInfo();
-        if (userBaseResponse.getCode() != 0) {
-            System.out.println("查询失败!");
-            return;
-        }
-        User user = userBaseResponse.getData();
+
+        // 调用数据库的方式
+        // BaseResponse<User> userBaseResponse = UserMapper.personInfo();
+        // if (userBaseResponse.getCode() != 0) {
+        //     System.out.println("查询失败!");
+        //     return;
+        // }
+        // User user = userBaseResponse.getData();
+
+        // 采取本地缓存的方式
+        LocalCache cacheMap = LocalCache.getInstance();
+        User user = (User) cacheMap.getCacheMap().get("userInfo");
 
         // 区分获取薪资还是获取个人信息
         if (MainKeyStrokeStrategyContext.isPerson) {
@@ -93,7 +95,14 @@ public class MainServiceImpl implements MainService {
         }
 
         // 查询原密码正确吗
-        boolean isPassword = UserMapper.isPassword(userId, password).getData();
+        // 数据库的方式
+        // boolean isPassword = UserMapper.isPassword(userId, password).getData();
+
+        // 本地缓存的方式
+        LocalCache cacheMap = LocalCache.getInstance();
+        User user = (User) cacheMap.getCacheMap().get("userInfo");
+        boolean isPassword = StringUtils.equals(password, user.getPassword());
+
         if (!isPassword) {
             System.out.println("原密码不正确！您还有" + count + "次机会");
             this.updatePassword();
@@ -131,6 +140,12 @@ public class MainServiceImpl implements MainService {
             System.out.println(new BusinessException(ErrorCode.SYSTEM_ERROR).getMessage());
             System.exit(0);
         }
+
+        // 修改密码成功之后需要立刻更改缓存
+        user.setPassword(updatePassword);
+        cacheMap.getCacheMap().put("userInfo", user);
+        count = 3;
+
         MainView.mainView();
     }
 }

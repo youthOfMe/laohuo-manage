@@ -3,9 +3,11 @@ package com.laohuo.company.service.impl;
 import com.laohuo.company.common.BaseResponse;
 import com.laohuo.company.common.ErrorCode;
 import com.laohuo.company.dao.UserMapper;
+import com.laohuo.company.entity.User;
 import com.laohuo.company.exception.BusinessException;
 import com.laohuo.company.service.HomeService;
 import com.laohuo.company.util.BaseContext;
+import com.laohuo.company.util.LocalCache;
 import com.laohuo.company.util.PassWordUtil;
 import com.laohuo.company.view.MainView;
 import org.apache.commons.lang3.StringUtils;
@@ -78,7 +80,16 @@ public class HomeServiceImpl implements HomeService {
         BaseResponse<ResultSet> queryResult = UserMapper.login(username, password);
 
         if (queryResult.getData().next()) {
+            // 将登录用户数据读入本地缓存
+            User user = new User();
+            user.setUsername(queryResult.getData().getString("username"));
+            user.setPassword(queryResult.getData().getString("password"));
+            user.setNickname(queryResult.getData().getString("nickname"));
+            user.setIsAdmin(queryResult.getData().getInt("isAdmin"));
+            user.setSalary(queryResult.getData().getDouble("salary"));
             BaseContext.setCurrentId(queryResult.getData().getLong("id"));
+            LocalCache cacheMap = LocalCache.getInstance();
+            cacheMap.getCacheMap().put("userInfo", user);
             System.out.println("登录成功~");
             MainView.mainView();
         } else {
