@@ -15,4 +15,10 @@ public interface MainService {
      * @throws Exception
      */
     void updatePassword() throws Exception;
+
+    /**
+     * 汇报工作
+     * @throws Exception
+     */
+    void presentation() throws Exception;
 }

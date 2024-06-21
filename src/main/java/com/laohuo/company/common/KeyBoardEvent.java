@@ -10,6 +10,7 @@ public enum KeyBoardEvent {
     Exit(103, "用户退出"),
     PersonInfo(201, "查看个人信息"),
     UpdatePassword(202, "修改用户密码"),
+    Report(203, "汇报工作/查看汇报"),
     GetSalary(204, "查看薪水");
 
     /**

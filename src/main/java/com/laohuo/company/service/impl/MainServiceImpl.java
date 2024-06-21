@@ -2,6 +2,7 @@ package com.laohuo.company.service.impl;
 
 import com.laohuo.company.common.ErrorCode;
 import com.laohuo.company.common.ViewInfo;
+import com.laohuo.company.dao.ReportMapper;
 import com.laohuo.company.dao.UserMapper;
 import com.laohuo.company.entity.User;
 import com.laohuo.company.exception.BusinessException;
@@ -34,7 +35,11 @@ public class MainServiceImpl implements MainService {
         return mainService;
     }
 
-    final Scanner scanner = new Scanner(System.in);
+    final static Scanner scanner = new Scanner(System.in);
+
+    static {
+        scanner.useDelimiter("\n");
+    }
 
     /**
      * 查看个人信息
@@ -146,6 +151,35 @@ public class MainServiceImpl implements MainService {
         cacheMap.getCacheMap().put("userInfo", user);
         count = 3;
 
+        MainView.mainView();
+    }
+
+    /**
+     * 汇报工作
+     * @throws Exception
+     */
+    @Override
+    public void presentation() throws Exception {
+        System.out.println("请输入汇报标题: ");
+        String title = scanner.next();
+        if (StringUtils.isBlank(title)) {
+            title = "空汇报";
+        }
+
+        System.out.println("请输入汇报内容: ");
+        String content = scanner.next();
+        if (StringUtils.isBlank(content)) {
+            content = "空汇报";
+        }
+
+        Boolean isSuccess = ReportMapper.addPresentation(title, content).getData();
+        if (!isSuccess) {
+            System.out.println(new BusinessException(ErrorCode.SYSTEM_ERROR).getMessage());
+            return;
+        }
+        if (isSuccess) {
+            System.out.println("汇报成功！");
+        }
         MainView.mainView();
     }
 }
