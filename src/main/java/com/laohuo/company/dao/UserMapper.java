@@ -46,7 +46,7 @@ public class UserMapper {
         PreparedStatement preparedStatement = connection.prepareStatement(sql);
         preparedStatement.setString(1, username);
         ResultSet userData = preparedStatement.executeQuery();
-        return ResultUtils.success(userData != null);
+        return ResultUtils.success(userData.next());
     }
 
     /**

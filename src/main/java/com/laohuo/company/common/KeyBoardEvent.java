@@ -11,7 +11,8 @@ public enum KeyBoardEvent {
     PersonInfo(201, "查看个人信息"),
     UpdatePassword(202, "修改用户密码"),
     Report(203, "汇报工作/查看汇报"),
-    GetSalary(204, "查看薪水");
+    GetSalary(204, "查看薪水"),
+    GoExit(205, "返回上一层");
 
     /**
      * 按键编码

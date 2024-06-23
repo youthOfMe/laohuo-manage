@@ -11,6 +11,7 @@ import com.laohuo.company.pojo.vo.WaitReplyReport;
 import com.laohuo.company.service.MainService;
 import com.laohuo.company.strategy.mainKeyStroke.MainKeyStrokeStrategyContext;
 import com.laohuo.company.util.*;
+import com.laohuo.company.view.HomeView;
 import com.laohuo.company.view.MainView;
 import org.apache.commons.lang3.StringUtils;
 
@@ -269,5 +270,16 @@ public class MainServiceImpl implements MainService {
             System.out.println("非法输入！");
         }
 
+    }
+
+    /**
+     * 退出逻辑
+     * @throws Exception
+     */
+    @Override
+    public void exit() throws Exception {
+        HomeServiceImpl.count = 3;
+        MainServiceImpl.count = 3;
+        HomeView.homeView();
     }
 }

@@ -82,6 +82,9 @@ public class KeyBoardEventListener {
                         MainKeyStokeStategy presentationStrategy = new PresentationStrategy();
                         presentationStrategy.keyBoardEvent(mainKeyStrokeStrategyContext);
                     }
+                } else if (keyBoard == KeyBoardEvent.GoExit.getCode()) {
+                    MainKeyStokeStategy exitStrokeStrategy = new ExitStrokeStrategy();
+                    exitStrokeStrategy.keyBoardEvent(mainKeyStrokeStrategyContext);
                 } else {
                     System.out.println("操作错误请重新操作");
                     this.ListenKeyBoardEvent(viewInfo);

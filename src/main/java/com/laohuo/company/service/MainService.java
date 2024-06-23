@@ -27,4 +27,10 @@ public interface MainService {
      * @throws Exception
      */
     void lookReport() throws Exception;
+
+    /**
+     *
+     * @throws Exception
+     */
+    void exit() throws Exception;
 }
